@@ -6,7 +6,7 @@
 /*   By: wesobiec <wesobiec@student.42warsaw.pl>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/19 20:29:23 by wesobiec          #+#    #+#             */
-/*   Updated: 2026/06/19 21:02:13 by wesobiec         ###   ########.fr       */
+/*   Updated: 2026/07/06 12:09:26 by wesobiec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,23 @@ int	ft_init_sim(char **av, t_sim *sim)
 	return (ft_alloc_init_sim(sim));
 }
 
+void	ft_init_coders(t_sim *sim)
+{
+	int	i;
+
+	i = 0;
+	while (i < sim->num_coders)
+	{
+		sim->coders[i].id = i + 1;
+		sim->coders[i].last_compile_start = 0;
+		sim->coders[i].compiles_count = 0;
+		sim->coders[i].left_dongle = &sim->dongles[i];
+		sim->coders[i].right_dongle = &sim->dongles[(i + 1) % sim->num_coders];
+		sim->coders[i].sim = sim;
+		i++;
+	}
+}
+
 int	ft_alloc_init_sim(t_sim *sim)
 {
 	int	i;
@@ -71,11 +88,15 @@ int	ft_alloc_init_sim(t_sim *sim)
 		return (1);
 	sim->dongles = malloc(sizeof(pthread_mutex_t) * sim->num_coders);
 	if (!sim->dongles)
-		return (1);
-	while (i < sim->num_coders)
 	{
-		pthread_mutex_init(&sim->dongles[i], NULL);
-		i++;
+		free(sim->coders);
+		return (1);
 	}
+	while (i < sim->num_coders)
+		pthread_mutex_init(&sim->dongles[i++], NULL);
+	ft_init_coders(sim);
+	pthread_mutex_init(&sim->print_mutex, NULL);
+	pthread_mutex_init(&sim->dead_mutex, NULL);
+	sim->is_dead = 0;
 	return (0);
 }
