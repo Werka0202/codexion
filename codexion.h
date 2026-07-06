@@ -6,7 +6,7 @@
 /*   By: wesobiec <wesobiec@student.42warsaw.pl>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/19 15:08:15 by wesobiec          #+#    #+#             */
-/*   Updated: 2026/06/19 21:03:55 by wesobiec         ###   ########.fr       */
+/*   Updated: 2026/07/06 15:22:09 by wesobiec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,5 +52,7 @@ typedef struct s_sim
 int	ft_check_args(int ar, char **av);
 int	ft_init_sim(char **av, t_sim *sim);
 int	ft_alloc_init_sim(t_sim *sim);
+long	ft_get_time(void);
+void	ft_sleep(long time_in_ms);
 
 #endif
