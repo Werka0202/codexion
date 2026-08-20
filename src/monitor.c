@@ -6,7 +6,7 @@
 /*   By: wesobiec <wesobiec@student.42warsaw.pl>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/06 13:51:23 by wesobiec          #+#    #+#             */
-/*   Updated: 2026/08/20 14:05:49 by wesobiec         ###   ########.fr       */
+/*   Updated: 2026/08/20 19:10:00 by wesobiec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,10 @@
 
 int	check_burnout(t_sim *sim, int i)
 {
-	if (ft_get_time() - sim->coders[i].last_compile_start >= sim->time_to_burnout)
+	long	time_passed;
+
+	time_passed = ft_get_time() - sim->coders[i].last_compile_start;
+	if (time_passed >= sim->time_to_burnout)
 	{
 		pthread_mutex_unlock(&sim->coders[i].time_mutex);
 		print_action(&sim->coders[i], "burned out");

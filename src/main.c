@@ -6,7 +6,7 @@
 /*   By: wesobiec <wesobiec@student.42warsaw.pl>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/19 15:15:14 by wesobiec          #+#    #+#             */
-/*   Updated: 2026/07/06 15:34:26 by wesobiec         ###   ########.fr       */
+/*   Updated: 2026/08/20 19:11:01 by wesobiec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,5 @@ int	main(int ar, char **av)
 	if (ft_init_sim(av, &sim) != 0)
 		return (1);
 	start_coders(&sim);
-	
-	return(0);
+	return (0);
 }

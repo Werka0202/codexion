@@ -6,7 +6,7 @@
 /*   By: wesobiec <wesobiec@student.42warsaw.pl>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/06 13:51:20 by wesobiec          #+#    #+#             */
-/*   Updated: 2026/08/20 14:05:26 by wesobiec         ###   ########.fr       */
+/*   Updated: 2026/08/20 19:11:18 by wesobiec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,8 @@ void	*routine(void *arg)
 	t_coder	*c;
 
 	c = (t_coder *)arg;
-	while (c->sim->req_compiles == -1 || c->compiles_count < c->sim->req_compiles)
+	while (c->sim->req_compiles == -1
+		|| c->compiles_count < c->sim->req_compiles)
 	{
 		take_dongles(c);
 		print_action(c, "is compiling");
@@ -75,7 +76,8 @@ int	start_coders(t_sim *sim)
 	while (i < sim->num_coders)
 	{
 		sim->coders[i].last_compile_start = sim->start_time;
-		if (pthread_create(&sim->coders[i].thread_id, NULL, routine, &sim->coders[i]) != 0)
+		if (pthread_create(&sim->coders[i].thread_id, NULL,
+				routine, &sim->coders[i]) != 0)
 			return (1);
 		i++;
 	}
