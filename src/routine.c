@@ -6,7 +6,7 @@
 /*   By: wesobiec <wesobiec@student.42warsaw.pl>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/06 13:51:20 by wesobiec          #+#    #+#             */
-/*   Updated: 2026/08/20 13:30:01 by wesobiec         ###   ########.fr       */
+/*   Updated: 2026/08/20 13:48:09 by wesobiec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ void *routine(void *arg)
 		print_action(coder, "is compiling");
 		pthread_mutex_lock(&coder->time_mutex);
 		coder->last_compile_start = ft_get_time();
+		pthread_mutex_unlock(&coder->time_mutex);
 		ft_sleep(coder->sim->time_to_compile);
 		coder->compiles_count++;
 		pthread_mutex_unlock(coder->left_dongle);
@@ -49,27 +50,42 @@ void *routine(void *arg)
 		print_action(coder, "is refactoring");
 		ft_sleep(coder->sim->time_to_refactor);
 	}
+	return (NULL);
 }
 
-int	start_coders(t_sim *sim)
+int start_coders(t_sim *sim)
 {
-	int	i;
+    int         i;
+    pthread_t   monitor_thread;
 
-	i = 0;
-	while (i < sim->num_coders)
-	{
-		if (pthread_create(&sim->coders[i].thread_id, NULL, routine, &sim->coders[i]) != 0)
-		{
-			printf("Error: pthread_create failed\n");
-			return (1);
-		}
-		i++;
-	}
-	i = 0;
-	while (i < sim->num_coders)
-	{
-		pthread_join(sim->coders[i].thread_id, NULL);
-		i++;
-	}
-	return (0);
+    sim->start_time = ft_get_time(); 
+
+    i = 0;
+    while (i < sim->num_coders)
+    {
+		sim->coders[i].last_compile_start = sim->start_time;
+		
+        if (pthread_create(&sim->coders[i].thread_id, NULL, routine, &sim->coders[i]) != 0)
+        {
+            printf("Error: pthread_create failed\n");
+            return (1);
+        }
+        i++;
+    }
+    
+    if (pthread_create(&monitor_thread, NULL, monitor_routine, sim) != 0)
+    {
+        printf("Error: Monitor thread failed\n");
+        return (1);
+    }
+
+    i = 0;
+    while (i < sim->num_coders)
+    {
+        pthread_join(sim->coders[i].thread_id, NULL);
+        i++;
+    }
+    
+    pthread_join(monitor_thread, NULL);
+    return (0);
 }
