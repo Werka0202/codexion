@@ -6,7 +6,7 @@
 /*   By: wesobiec <wesobiec@student.42warsaw.pl>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/19 20:29:23 by wesobiec          #+#    #+#             */
-/*   Updated: 2026/07/06 12:09:26 by wesobiec         ###   ########.fr       */
+/*   Updated: 2026/08/20 13:29:21 by wesobiec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ void	ft_init_coders(t_sim *sim)
 	{
 		sim->coders[i].id = i + 1;
 		sim->coders[i].last_compile_start = 0;
+		pthread_mutex_init(&sim->coders[i].time_mutex, NULL);
 		sim->coders[i].compiles_count = 0;
 		sim->coders[i].left_dongle = &sim->dongles[i];
 		sim->coders[i].right_dongle = &sim->dongles[(i + 1) % sim->num_coders];

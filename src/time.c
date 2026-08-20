@@ -6,7 +6,7 @@
 /*   By: wesobiec <wesobiec@student.42warsaw.pl>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/06 13:51:09 by wesobiec          #+#    #+#             */
-/*   Updated: 2026/07/06 15:35:30 by wesobiec         ###   ########.fr       */
+/*   Updated: 2026/08/19 22:54:11 by wesobiec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,5 +31,5 @@ void	ft_sleep(long time_in_ms)
 
 	start_time = ft_get_time();
 	while (ft_get_time() - start_time < time_in_ms)
-		ft_sleep(100);
+		usleep(100);
 }
