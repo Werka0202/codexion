@@ -7,6 +7,7 @@ SRC = $(SRC_DIR)/main.c \
       $(SRC_DIR)/init.c \
       $(SRC_DIR)/monitor.c \
       $(SRC_DIR)/routine.c \
+      $(SRC_DIR)/scheduler.c \
       $(SRC_DIR)/time.c \
       $(SRC_DIR)/utils.c
 

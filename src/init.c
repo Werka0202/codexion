@@ -6,7 +6,7 @@
 /*   By: wesobiec <wesobiec@student.42warsaw.pl>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/19 20:29:23 by wesobiec          #+#    #+#             */
-/*   Updated: 2026/08/20 13:29:21 by wesobiec         ###   ########.fr       */
+/*   Updated: 2026/08/20 14:04:55 by wesobiec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,25 +14,19 @@
 
 int	ft_check_args(int ar, char **av)
 {
-	int		i;
-	int		j;
+	int	i;
+	int	j;
 
 	j = 1;
 	if (ar != 9)
-	{
-		printf("Error: Wrong numbers of arguments!\n");
-		return (1);
-	}
+		return (printf("Error: Wrong numbers of arguments!\n"), 1);
 	while (j < ar - 1)
 	{
 		i = 0;
 		while (av[j][i])
 		{
-			if (av[j][i] < 48 || av[j][i] > 57)
-			{
-				printf("Error: arguments need to be a numbers");
-				return (1);
-			}
+			if (av[j][i] < '0' || av[j][i] > '9')
+				return (printf("Error: arguments must be numbers\n"), 1);
 			i++;
 		}
 		j++;
@@ -54,10 +48,7 @@ int	ft_init_sim(char **av, t_sim *sim)
 	else if (strcmp(av[8], "edf") == 0)
 		sim->scheduler = 1;
 	else
-	{
-		printf("Error: the last argument need to be edf or fifo");
-		return (1);
-	}
+		return (printf("Error: last argument must be edf or fifo\n"), 1);
 	return (ft_alloc_init_sim(sim));
 }
 
@@ -85,19 +76,22 @@ int	ft_alloc_init_sim(t_sim *sim)
 
 	i = 0;
 	sim->coders = malloc(sizeof(t_coder) * sim->num_coders);
-	if (!sim->coders)
+	sim->dongles = malloc(sizeof(t_dongle) * sim->num_coders);
+	sim->queue = malloc(sizeof(int) * sim->num_coders);
+	if (!sim->coders || !sim->dongles || !sim->queue)
 		return (1);
-	sim->dongles = malloc(sizeof(pthread_mutex_t) * sim->num_coders);
-	if (!sim->dongles)
-	{
-		free(sim->coders);
-		return (1);
-	}
 	while (i < sim->num_coders)
-		pthread_mutex_init(&sim->dongles[i++], NULL);
+	{
+		pthread_mutex_init(&sim->dongles[i].mutex, NULL);
+		sim->dongles[i].last_released = 0;
+		i++;
+	}
 	ft_init_coders(sim);
 	pthread_mutex_init(&sim->print_mutex, NULL);
 	pthread_mutex_init(&sim->dead_mutex, NULL);
+	pthread_mutex_init(&sim->queue_mutex, NULL);
+	pthread_cond_init(&sim->queue_cond, NULL);
+	sim->wait_count = 0;
 	sim->is_dead = 0;
 	return (0);
 }
